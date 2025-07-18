@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Viber Popup</title>
+  <link rel="icon" href="https://www.google.com/s2/favicons?sz=64&domain=viber.com" type="image/png">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ececec;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #f7f7f7;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 360px;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 22px;
+      text-align: center;
+      color: #333;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+      transition: border 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #665CAC;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #665CAC;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #574a95;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>ViberQuickChat</h2>
+    <input type="text" id="phone" placeholder="Формат: 0501234567">
+    <button onclick="openViberPopup()">Відкрити у Viber</button>
+  </div>
+
+  <script>
+    function openViberPopup() {
+
+      const input = document.getElementById('phone').value.trim();
+      const phone = '+38' + input;
+      const phoneRegex = /^0\d{9}$/;
+
+
+  if (!phoneRegex.test(input)) {
+    alert("Введіть коректний номер у форматі 0XXXXXXXXX");
+    return;
+  }
+
+  // 👉 Центрування вікна
+  const popupWidth = 700;
+  const popupHeight = 500;
+  const screenLeft = window.screenLeft ?? window.screenX;
+  const screenTop = window.screenTop ?? window.screenY;
+  const screenWidth = window.innerWidth;
+  const screenHeight = window.innerHeight;
+
+  const left = screenLeft + (screenWidth - popupWidth) / 2;
+  const top = screenTop + (screenHeight - popupHeight) / 2 + 100;
+
+  const popup = window.open('', '_blank',
+    `width=${popupWidth},height=${popupHeight},left=${left},top=${top},resizable=1,scrollbars=1`
+  );
+
+  if (!popup) {
+    alert('Браузер заблокував спливаюче вікно. Дозволь його вручну.');
+    return;
+  }
+
+  const viberLink = `viber://chat?number=${encodeURIComponent(phone)}`;
+
+  popup.document.write(`
+    <html>
+    <head>
+      <title>Перехід у Viber</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          text-align: center;
+          margin: 0;
+          padding: 30px;
+          background: #f7f7f7;
+        }
+        p {
+          margin-bottom: 20px;
+          color: #333;
+          font-size: 16px;
+        }
+        a {
+          display: inline-block;
+          padding: 12px 20px;
+          background-color: #665CAC;
+          color: white;
+          text-decoration: none;
+          border-radius: 5px;
+          font-size: 16px;
+        }
+        a:hover {
+          background-color: #574a95;
+        }
+      </style>
+    </head>
+    <body>
+      <p>Натисніть кнопку нижче, щоб відкрити Viber:</p>
+      <a href="${viberLink}">Відкрити у Viber</a>
+    </body>
+    </html>
+  `);
+
+  popup.document.close();
+}
+
+  </script>
+
+</body>
+</html>
